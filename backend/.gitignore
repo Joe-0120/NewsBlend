@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+
+# VS Code settings
+.vscode/
+
+# Environment files
+*.env
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+
+# MyPy / Pylint / Logs
+.mypy_cache/
+*.log
+
+# MacOS and Linux
+.DS_Store
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Compiled C files
+*.so
