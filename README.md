@@ -1,10 +1,10 @@
-# 📰 NewsBlend Prototype
+# NewsBlend Prototype
 
 **NewsBlend** is a mobile-first news aggregator tailored for Generation Z. It features a modern UI, interactive features, and delivers credible news from trusted sources — all built with React Native (Expo) and Flask.
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React Native (Expo + TypeScript + Expo Router)
 - **Backend**: Flask (Python) with mock news API
@@ -14,7 +14,7 @@
 
 ---
 
-## 🧱 Folder Structure
+## Folder Structure
 
 ```
 newsblend/
@@ -78,9 +78,9 @@ newsblend/
 
 4. Start the Expo app:
 
-   ```bash
-   npx run web
-   ```
+```bash
+npm run web
+```
 
 ---
 
