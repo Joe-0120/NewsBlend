@@ -1,45 +1,79 @@
-import { Tabs } from 'expo-router';
+// app/(tabs)/_layout.tsx
 import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from 'expo-router';
+import { Image, StyleSheet, View } from 'react-native';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Define Icon component for cleaner code
+const TabBarIcon = ({ source, focused, size = 26 }) => (
+  <Image
+    source={source}
+    style={[styles.icon, { width: size, height: size, tintColor: focused ? '#FFFFFF' : '#808080' }]}
+    resizeMode="contain"
+  />
+);
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarActiveTintColor: '#FFFFFF', // White for active icon/text
+        tabBarInactiveTintColor: '#808080', // Grey for inactive icon/text
+        tabBarStyle: {
+          backgroundColor: '#1C1C1E', // Dark background for tab bar
+          borderTopWidth: 0, // Remove top border
+          height: 90, // Adjust height if needed
+          paddingBottom: 30, // Padding for safe area / home indicator
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'AppRegular', // Use loaded font
+          fontSize: 10,
+          marginTop: -5, // Adjust label position relative to icon
+        },
+        headerShown: false, // We'll handle headers within each screen
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} source={require('../../assets/white-home-menu.png')} />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+           tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} source={require('../../assets/white-loop.png')} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="saved"
+        options={{
+          title: 'Saved',
+           tabBarIcon: ({ focused }) => (
+             // Use filled icon when focused, outline when not
+            <TabBarIcon focused={focused} source={focused ? require('../../assets/black-filled-bookmark.png') : require('../../assets/white-outline-bookmark.png')} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+           tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} source={require('../../assets/white-outline-profile-icon.png')} />
+          ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  icon: {
+    marginBottom: -3, // Adjust icon position
+  },
+});

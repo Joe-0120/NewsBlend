@@ -1,109 +1,214 @@
-import { StyleSheet, Image, Platform } from 'react-native';
+// app/(tabs)/explore.tsx
+import React from 'react';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+// --- Reuse News Card Component (or import if defined separately) ---
+const NewsCard = ({ item, horizontal = false }) => (
+  <View style={[styles.card, horizontal ? styles.cardHorizontal : styles.cardVertical]}>
+    <Image source={item.imageUrl} style={styles.cardImageLarge} />
+    <Text style={styles.cardTitle} numberOfLines={3}>{item.title}</Text>
+    <View style={styles.cardFooter}>
+      <Image source={item.sourceLogo} style={styles.sourceLogo} />
+      <Text style={styles.cardSource}>{item.source}</Text>
+      <Text style={styles.cardCategory}>{item.category}</Text>
+    </View>
+  </View>
+);
 
-export default function TabTwoScreen() {
+const SmallNewsCard = ({ item }) => (
+    <View style={styles.smallCard}>
+        <View style={styles.smallCardTextContainer}>
+            <Text style={styles.smallCardTitle} numberOfLines={3}>{item.title}</Text>
+            <View style={styles.cardFooter}>
+                 <Image source={item.sourceLogo} style={styles.sourceLogo} />
+                 <Text style={styles.cardSource}>{item.source}</Text>
+                 <Text style={styles.cardCategory}>{item.category}</Text>
+            </View>
+        </View>
+         <Image source={item.imageUrl} style={styles.smallCardImage} />
+    </View>
+);
+
+
+// --- Placeholder Data ---
+const breakingNewsData = [
+  { id: 'b1', title: "Here's a breakdown of the newly announced tariffs by country", source: 'CNN', category: 'Politics', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') }, // Replace placeholders
+];
+
+const moreNewsData = [
+    { id: 'm1', title: "Could Trump's tariffs spell the end of Canadian-made NHL jerseys?", source: 'CBC', category: 'Politics', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') }, // Replace placeholders
+    { id: 'm2', title: "Trump administration lists Quebec language law Bill 96 as trade barrier", source: 'CBC', category: 'Politics', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') }, // Replace placeholders
+     { id: 'm3', title: "Another news item for the list", source: 'Reuters', category: 'Business', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') }, // Replace placeholders
+];
+
+
+const categories = ['Politics', 'Climate', 'Environment', 'Business', 'Tech', 'World'];
+
+// --- Explore Screen Component ---
+export default function ExploreScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Explore</Text>
+          <TouchableOpacity>
+            <Image source={require('../../assets/black-loop.png')} style={styles.searchIcon} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Categories */}
+         <View style={styles.categoryContainer}>
+             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
+                {categories.map((category) => (
+                <TouchableOpacity key={category} style={styles.categoryChip}>
+                    <Text style={styles.categoryText}>{category}</Text>
+                </TouchableOpacity>
+                ))}
+            </ScrollView>
+         </View>
+
+
+        {/* Breaking News Section */}
+        <Text style={styles.sectionTitle}>Breaking News</Text>
+        {breakingNewsData.map(item => <NewsCard key={item.id} item={item} />)}
+
+
+        {/* More News Section (using smaller cards) */}
+        {moreNewsData.map(item => <SmallNewsCard key={item.id} item={item} />)}
+
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
+// --- Styles (reuse and add specific ones) ---
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  titleContainer: {
+  container: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
+  header: {
     flexDirection: 'row',
-    gap: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 15,
   },
+  headerTitle: {
+    fontFamily: 'AppBold',
+    fontSize: 24,
+    color: '#000',
+  },
+  searchIcon: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
+    tintColor: '#808080',
+  },
+  categoryContainer: {
+    marginBottom: 20,
+  },
+  categoryScroll: {
+      paddingVertical: 5,
+  },
+   categoryChip: {
+    backgroundColor: '#F3F9F9',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 15,
+    marginRight: 8,
+  },
+  categoryText: {
+    fontFamily: 'AppRegular',
+    fontSize: 13,
+    color: '#555',
+  },
+  sectionTitle: {
+    fontFamily: 'AppBold',
+    fontSize: 18,
+    color: '#000',
+    marginBottom: 10,
+  },
+  card: { // Style for the large breaking news card
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    marginBottom: 20, // More margin after the big card
+    overflow: 'hidden',
+  },
+  cardVertical: {
+     width: '100%',
+  },
+  cardImageLarge: { // Larger image for breaking news
+    width: '100%',
+    height: 180, // Adjust height
+    backgroundColor: '#E0E0E0',
+  },
+   cardTitle: {
+    fontFamily: 'AppBold',
+    fontSize: 16, // Title size from PDF
+    color: '#000',
+    paddingHorizontal: 8,
+    paddingTop: 10, // Add padding top
+    paddingBottom: 5, // Adjust padding
+  },
+   cardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingBottom: 10,
+    marginTop: 0, // Adjust margin
+  },
+   sourceLogo: {
+      width: 16,
+      height: 16,
+      resizeMode: 'contain',
+      marginRight: 4,
+  },
+  cardSource: {
+    fontFamily: 'AppRegular',
+    fontSize: 12, // Regular size from PDF
+    color: '#808080',
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  cardCategory: {
+    fontFamily: 'AppRegular',
+    fontSize: 12, // Regular size from PDF
+    color: '#808080',
+  },
+  // Styles for smaller news cards
+   smallCard: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start', // Align items to the top
+      backgroundColor: '#FFFFFF',
+      marginBottom: 15,
+      paddingVertical: 5, // Add some vertical padding if needed
+      // Add border bottom if needed
+      // borderBottomWidth: 1,
+      // borderBottomColor: '#EEEEEE',
+   },
+    smallCardTextContainer: {
+        flex: 1, // Take available space
+        marginRight: 10,
+    },
+    smallCardTitle: {
+        fontFamily: 'AppBold',
+        fontSize: 14, // Slightly smaller title
+        color: '#000',
+        marginBottom: 8, // Space between title and footer
+    },
+    smallCardImage: {
+        width: 90, // Fixed width for small image
+        height: 70, // Fixed height
+        borderRadius: 4,
+        backgroundColor: '#E0E0E0',
+    },
 });
