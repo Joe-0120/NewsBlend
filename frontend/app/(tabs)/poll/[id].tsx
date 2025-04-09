@@ -41,7 +41,7 @@ export default function PollScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:5000/api/polls/${id}`)
+      fetch(`http://localhost:5050/api/polls/${id}`)
         .then((res) => res.json())
         .then(setPoll)
         .catch(console.error);

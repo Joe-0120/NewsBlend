@@ -15,8 +15,8 @@ ARTICLES = {
         "title": "South Korea’s worst-ever wildfires double in size, killing at least 28 and incinerating temples",
         "subtitle": "Blaze that began in central Uiseong county has carved trail of devastation",
         "date": "Thomson Reuters • Posted: Mar 26, 2025 11:27 PM EDT",
-        "image_url": "http://localhost:5000/static/1_wildfire.png",
-        "publisher_logo_url": "http://localhost:5000/static/cbc_logo.png",
+        "image_url": "http://localhost:5050/static/1_wildfire.png",
+        "publisher_logo_url": "http://localhost:5050/static/cbc_logo.png",
         "content": [
             "Wildfires raging in South Korea doubled in size on Thursday from a day earlier, as authorities called the blazes the country’s worst natural fire disaster with at least 28 people killed and historic temples incinerated.",
             "More than 30,000 hectares have been charred or were still burning in the largest of the fires that began in the central Uiseong county. It is the biggest single forest fire in South Korea’s history. The previous record was 24,000 hectares in a March 2000 fire.",
@@ -28,8 +28,8 @@ ARTICLES = {
         "title": "Here’s a breakdown of the newly announced tariffs by country",
         "subtitle": "Trade tensions rise amid global policy shifts",
         "date": "CNN • Posted: Mar 20, 2025 2:45 PM EDT",
-        "image_url": "http://localhost:5000/static/2_tariff.png",
-        "publisher_logo_url": "http://localhost:5000/static/cnn_logo.png",
+        "image_url": "http://localhost:5050/static/2_tariff.png",
+        "publisher_logo_url": "http://localhost:5050/static/cnn_logo.png",
         "content": [
             "Governments around the world are introducing new tariffs this quarter, sparking concerns among economists and global industries. Countries including the United States, China, and members of the European Union have announced measures affecting various sectors.",
             "The U.S. Department of Commerce confirmed a 10% tariff on imported steel and a 5% tariff on select electronic goods from Asia. In response, China imposed retaliatory tariffs on American agricultural products, including soybeans and corn.",
@@ -99,8 +99,8 @@ def get_discussions(article_id):
                 "summary": "Blaze that began in central Uiseong county has carved trail of devastation",
                 "source": "CBC",
                 "category": "Environment",
-                "image_url": "http://localhost:5000/static/1_wildfire.png",
-                "logo_url": "http://localhost:5000/static/cbc_logo.png"
+                "image_url": "http://localhost:5050/static/1_wildfire.png",
+                "logo_url": "http://localhost:5050/static/cbc_logo.png"
             },
             "comments": [
                 {
@@ -124,8 +124,8 @@ def get_discussions(article_id):
                 "summary": "Here's a breakdown of the newly announced tariffs by country",
                 "source": "CNN",
                 "category": "Politics",
-                "image_url": "http://localhost:5000/static/2_tariff.png",
-                "logo_url": "http://localhost:5000/static/cnn_logo.png"
+                "image_url": "http://localhost:5050/static/2_tariff.png",
+                "logo_url": "http://localhost:5050/static/cnn_logo.png"
             },
             "comments": [
                 {
@@ -148,4 +148,4 @@ def get_discussions(article_id):
     return jsonify(discussions.get(article_id, {"article": {}, "comments": []}))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5050, debug=True)

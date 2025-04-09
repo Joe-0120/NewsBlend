@@ -42,7 +42,7 @@ export default function ArticleScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:5000/api/articles/${id}`)
+      fetch(`http://localhost:5050/api/articles/${id}`)
         .then((res) => res.json())
         .then((data) => setArticle(data))
         .catch((err) => console.error("Error fetching article:", err));
