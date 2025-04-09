@@ -1,10 +1,16 @@
 // app/(tabs)/home.tsx
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import { format } from 'date-fns';
+
+// Import the model and service
+import { Article } from '../../models/Article';
+import { getFeaturedArticles, getPersonalizedArticles, searchArticles } from '../../services/ArticleService';
 
 // --- Reusable News Card Component ---
-const NewsCard = ({ item, horizontal = false }) => (
+const NewsCard = ({ item, horizontal = false }: { item: Article, horizontal?: boolean }) => (
   <View style={[styles.card, horizontal ? styles.cardHorizontal : styles.cardVertical]}>
     <Image source={item.imageUrl} style={styles.cardImage} />
     <Text style={styles.cardTitle} numberOfLines={3}>{item.title}</Text>
@@ -16,72 +22,177 @@ const NewsCard = ({ item, horizontal = false }) => (
   </View>
 );
 
-// --- Placeholder Data ---
-const featuredData = [
-    { id: '1', title: 'Judge orders Trump administration to keep Signal records amid Yemen attack chat controversy', source: 'CNN', category: 'Politics', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') },
-    { id: '2', title: 'US allies worldwide decry Trump\'s car tariffs and threaten retaliation', source: 'The Guardian', category: 'Politics', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') },
-];
-
-const forYouData = [
-        { id: '3', title: "'Potent' ice storm likely to hit huge swath of Ontario, including Toronto: Environment Canada", source: 'CBC', category: 'Climate', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') },
-        { id: '4', title: "Danielle Smith's fight against tariffs takes her to right-wing PragerU gala", source: 'CBC', category: 'Politics', imageUrl: require('../../assets/logo.png'), sourceLogo: require('../../assets/logo.png') },
-];
-
 const categories = ['Politics', 'Climate', 'Environment', 'Business', 'Tech', 'World'];
 
 // --- Home Screen Component ---
 export default function HomeScreen() {
+  const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
+  const [personalizedArticles, setPersonalizedArticles] = useState<Article[]>([]);
+  const [currentDate, setCurrentDate] = useState<string>('');
+  const [greeting, setGreeting] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categoryArticles, setCategoryArticles] = useState<Article[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
+  // Navigate to search
+  const handleSearchPress = () => {
+    router.push({
+      pathname: '/(tabs)/explore',
+      params: { searchMode: 'true' }
+    });
+  };
+
+  // Handle category press
+  const handleCategoryPress = async (category: string) => {
+    // Toggle the category if it's already selected
+    if (selectedCategory === category) {
+      setSelectedCategory(null);
+      return;
+    }
+
+    setSelectedCategory(category);
+    setIsLoading(true);
+
+    try {
+      // Fetch articles for the selected category
+      const results = await searchArticles({ category });
+      setCategoryArticles(results);
+    } catch (error) {
+      console.error('Error filtering articles by category:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Set current date and greeting
+    const now = new Date();
+    setCurrentDate(format(now, 'EEE MMM d, yyyy'));
+    
+    const hour = now.getHours();
+    if (hour < 12) {
+      setGreeting('Good morning');
+    } else if (hour < 18) {
+      setGreeting('Good afternoon');
+    } else {
+      setGreeting('Good evening');
+    }
+    
+    // Fetch articles
+    const loadArticles = async () => {
+      try {
+        const featured = await getFeaturedArticles();
+        setFeaturedArticles(featured);
+        
+        const personalized = await getPersonalizedArticles();
+        setPersonalizedArticles(personalized);
+      } catch (error) {
+        console.error('Error loading articles:', error);
+      }
+    };
+    
+    loadArticles();
+  }, []);
+
+  // Render regular sections (Featured and For You)
+  const renderRegularSections = () => (
+    <>
+      {/* Featured Section */}
+      <Text style={styles.sectionTitle}>Featured</Text>
+      <FlatList
+          data={featuredArticles}
+          renderItem={({item}) => <NewsCard item={item} horizontal={true} />}
+          keyExtractor={item => item.id}
+          horizontal={false}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          scrollEnabled={false}
+      />
+
+      {/* For You Section */}
+      <Text style={styles.sectionTitle}>For you</Text>
+      <FlatList
+          data={personalizedArticles}
+          renderItem={({item}) => <NewsCard item={item} horizontal={true} />}
+          keyExtractor={item => item.id}
+          horizontal={false}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          scrollEnabled={false}
+      />
+    </>
+  );
+
+  // Render category-filtered content
+  const renderCategoryContent = () => (
+    <>
+      <Text style={styles.sectionTitle}>{selectedCategory} News</Text>
+      {categoryArticles.length === 0 ? (
+        <Text style={styles.noResultsText}>No articles found in {selectedCategory}</Text>
+      ) : (
+        <FlatList
+          data={categoryArticles}
+          renderItem={({item}) => <NewsCard item={item} horizontal={true} />}
+          keyExtractor={item => item.id}
+          horizontal={false}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          scrollEnabled={false}
+        />
+      )}
+    </>
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Good morning Jane!</Text>
-            <Text style={styles.date}>Thu Mar 27, 2025</Text>
+            <Text style={styles.greeting}>{greeting} Jane!</Text>
+            <Text style={styles.date}>{currentDate}</Text>
           </View>
           <Image source={require('../../assets/logo.png')} style={styles.headerLogo} />
         </View>
 
         {/* News Categories */}
         <View style={styles.categoryContainer}>
-          <TouchableOpacity style={styles.searchIconContainer}>
+          <TouchableOpacity 
+            style={styles.searchIconContainer}
+            onPress={handleSearchPress}
+          >
              <Image source={require('../../assets/black-loop.png')} style={styles.searchIcon} />
           </TouchableOpacity>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
             {categories.map((category) => (
-              <TouchableOpacity key={category} style={styles.categoryChip}>
-                <Text style={styles.categoryText}>{category}</Text>
+              <TouchableOpacity 
+                key={category} 
+                style={[
+                  styles.categoryChip,
+                  selectedCategory === category && styles.selectedCategoryChip
+                ]}
+                onPress={() => handleCategoryPress(category)}
+              >
+                <Text style={[
+                  styles.categoryText,
+                  selectedCategory === category && styles.selectedCategoryText
+                ]}>
+                  {category}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
-        {/* Featured Section */}
-        <Text style={styles.sectionTitle}>Featured</Text>
-        <FlatList
-            data={featuredData}
-            renderItem={({item}) => <NewsCard item={item} horizontal={true} />}
-            keyExtractor={item => item.id}
-            horizontal={false} // Render cards vertically but style them to appear side-by-side (or wrap)
-            numColumns={2} // Key for side-by-side layout
-            columnWrapperStyle={styles.row} // Style the row containing the columns
-            scrollEnabled={false} // Disable FlatList scrolling, rely on ScrollView
-        />
+        {/* Loading Indicator */}
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0a7ea4" />
+          </View>
+        )}
 
-
-        {/* For You Section */}
-        <Text style={styles.sectionTitle}>For you</Text>
-         <FlatList
-            data={forYouData}
-            renderItem={({item}) => <NewsCard item={item} horizontal={true} />}
-            keyExtractor={item => item.id}
-            horizontal={false}
-            numColumns={2}
-            columnWrapperStyle={styles.row}
-            scrollEnabled={false}
-        />
-
+        {/* Content: Either regular sections or category-filtered content */}
+        {!isLoading && (selectedCategory ? renderCategoryContent() : renderRegularSections())}
       </ScrollView>
     </SafeAreaView>
   );
@@ -118,7 +229,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     resizeMode: 'contain',
-    // Add border radius if needed
   },
   categoryContainer: {
     flexDirection: 'row',
@@ -128,7 +238,6 @@ const styles = StyleSheet.create({
   searchIconContainer: {
       padding: 8,
       marginRight: 5,
-      // backgroundColor: '#F0F0F0', // Optional background
       borderRadius: 15,
   },
   searchIcon: {
@@ -147,10 +256,16 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginRight: 8,
   },
+  selectedCategoryChip: {
+    backgroundColor: '#0a7ea4', // Highlight selected category
+  },
   categoryText: {
     fontFamily: 'AppRegular',
     fontSize: 13,
     color: '#555', // Darker grey text
+  },
+  selectedCategoryText: {
+    color: '#FFFFFF', // White text for selected category
   },
   sectionTitle: {
     fontFamily: 'AppBold',
@@ -159,7 +274,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
-   row: {
+  row: {
     flex: 1,
     justifyContent: "space-between", // Distribute space between cards in a row
   },
@@ -172,9 +287,9 @@ const styles = StyleSheet.create({
   cardHorizontal: {
      width: '48%', // Roughly half width minus some margin/padding
   },
-   cardVertical: { // Style for cards that take full width (like in Explore)
+  cardVertical: { // Style for cards that take full width (like in Explore)
      width: '100%',
-   },
+  },
   cardImage: {
     width: '100%',
     height: 100, // Adjust height as needed
@@ -213,16 +328,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#808080',
   },
-  // --- Add placeholder image styles if you don't have real source logos ---
-  // placeholderLogo: {
-  //   width: 16,
-  //   height: 16,
-  //   borderRadius: 8,
-  //   backgroundColor: '#CCCCCC',
-  //   marginRight: 4,
-  // }
+  loadingContainer: {
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  noResultsText: {
+    fontFamily: 'AppRegular',
+    fontSize: 16,
+    color: '#808080',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  }
 });
-
-// --- Add placeholder images/logos to your assets/images folder ---
-// e.g., assets/images/placeholder.png, assets/images/cnn-logo.png etc.
-// Make sure the require paths match your actual file locations.

@@ -1,70 +1,120 @@
 // app/(tabs)/_layout.tsx
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Tabs, usePathname } from 'expo-router';
+import { Image, StyleSheet, Text, View, Dimensions, Animated, Platform } from 'react-native';
 
-// Define Icon component for cleaner code
-const TabBarIcon = ({ source, focused, size = 26 }) => (
-  <Image
-    source={source}
-    style={[styles.icon, { width: size, height: size, tintColor: focused ? '#FFFFFF' : '#808080' }]}
-    resizeMode="contain"
-  />
-);
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function TabLayout() {
+  const pathname = usePathname();
+  const activeTab = pathname.split('/').pop() || 'home';
+  const [animatedValues] = useState({
+    home: new Animated.Value(activeTab === 'home' ? 1 : 0),
+    explore: new Animated.Value(activeTab === 'explore' ? 1 : 0),
+    saved: new Animated.Value(activeTab === 'saved' ? 1 : 0),
+    profile: new Animated.Value(activeTab === 'profile' ? 1 : 0),
+  });
+
+  useEffect(() => {
+    // Animate transitions when tab changes
+    Object.keys(animatedValues).forEach(tab => {
+      Animated.timing(animatedValues[tab], {
+        toValue: activeTab === tab ? 1 : 0,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+    });
+  }, [activeTab]);
+
+  const getTabStyle = (tabName) => {
+    const isActive = activeTab === tabName;
+    
+    // Calculate dynamic spacing and width based on active state
+    const tabWidth = animatedValues[tabName].interpolate({
+      inputRange: [0, 1],
+      outputRange: [40, 110] // width expands when active
+    });
+    
+    const marginHorizontal = animatedValues[tabName].interpolate({
+      inputRange: [0, 1],
+      outputRange: [10, 0] // reduce margins when active
+    });
+
+    return {
+      width: tabWidth,
+      marginHorizontal,
+      backgroundColor: isActive ? '#000000' : 'transparent',
+    };
+  };
+
+  const renderTabIcon = (tabName, label, iconSource, activeIconSource = null) => {
+    const isActive = activeTab === tabName;
+    
+    return (
+      <Animated.View style={[styles.tabItem, getTabStyle(tabName)]}>
+        <Image
+          source={activeIconSource && isActive ? activeIconSource : iconSource}
+          resizeMode="contain"
+          style={[
+            styles.tabIcon,
+            { tintColor: isActive ? '#FFFFFF' : '#808080' }
+          ]}
+        />
+        {isActive && (
+          <Text style={styles.tabLabel}>
+            {label}
+          </Text>
+        )}
+      </Animated.View>
+    );
+  };
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#FFFFFF', // White for active icon/text
-        tabBarInactiveTintColor: '#808080', // Grey for inactive icon/text
-        tabBarStyle: {
-          backgroundColor: '#1C1C1E', // Dark background for tab bar
-          borderTopWidth: 0, // Remove top border
-          height: 90, // Adjust height if needed
-          paddingBottom: 30, // Padding for safe area / home indicator
-        },
-        tabBarLabelStyle: {
-          fontFamily: 'AppRegular', // Use loaded font
-          fontSize: 10,
-          marginTop: -5, // Adjust label position relative to icon
-        },
-        headerShown: false, // We'll handle headers within each screen
-      }}>
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: styles.tabBar,
+      }}
+    >
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} source={require('../../assets/white-home-menu.png')} />
+          tabBarIcon: () => renderTabIcon(
+            'home',
+            'Home',
+            require('../../assets/white-home-menu.png')
           ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
-           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} source={require('../../assets/white-loop.png')} />
+          tabBarIcon: () => renderTabIcon(
+            'explore',
+            'Explore',
+            require('../../assets/white-loop.png')
           ),
         }}
       />
       <Tabs.Screen
         name="saved"
         options={{
-          title: 'Saved',
-           tabBarIcon: ({ focused }) => (
-             // Use filled icon when focused, outline when not
-            <TabBarIcon focused={focused} source={focused ? require('../../assets/black-filled-bookmark.png') : require('../../assets/white-outline-bookmark.png')} />
+          tabBarIcon: () => renderTabIcon(
+            'saved',
+            'Saved',
+            require('../../assets/white-outline-bookmark.png'),
+            require('../../assets/black-filled-bookmark.png')
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
-           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} source={require('../../assets/white-outline-profile-icon.png')} />
+          tabBarIcon: () => renderTabIcon(
+            'profile',
+            'Profile',
+            require('../../assets/white-outline-profile-icon.png')
           ),
         }}
       />
@@ -73,7 +123,46 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  icon: {
-    marginBottom: -3, // Adjust icon position
+  tabBar: {
+    backgroundColor: '#F3F9F9',
+    borderTopWidth: 0,
+    height: 100,
+    paddingHorizontal: 10,
+    paddingTop: 15,
+    paddingBottom: 30,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  tabItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderRadius: 20,
+    height: 40,
+  },
+  tabIcon: {
+    width: 22,
+    height: 22,
+  },
+  tabLabel: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontFamily: 'SchibstedGrotesk-Medium',
+    marginLeft: 8,
   },
 });
