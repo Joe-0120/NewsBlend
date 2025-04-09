@@ -93,7 +93,7 @@ export default function Profile() {
             onPress={() => {
               if (i === 0) {
                 // Navigate to the Saved Articles screen
-                router.push('/saved-articles');
+                router.push('/saved');
               } else {
                 // Placeholder for other actions
                 console.log(`${label} pressed`);
@@ -115,7 +115,7 @@ export default function Profile() {
           Settings
         </Text>
         <TouchableOpacity style={styles.menuItem} onPress={() => router.push('../components/account')}>
-          <Text style={styles.menuLabel}>{user.menu[3]}</Text>
+          <Text style={styles.menuLabel}>{user.menu[2]}</Text>
           <Ionicons
             name="chevron-forward"
             size={20}

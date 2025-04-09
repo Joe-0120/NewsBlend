@@ -9,7 +9,7 @@ import { Article, ArticleApiResponse, ArticleSearchParams } from '../models/Arti
 
 // Base URL for the API - change this to your actual API endpoint when deploying
 // Using IP address instead of localhost for mobile compatibility
-const API_URL = 'http://0.0.0.0:5000/api'; // Android emulator
+const API_URL = 'http://localhost:5050/api'; // Android emulator
 // const API_URL = 'http://127.0.0.1:5000/api'; // iOS simulator
 
 /**
@@ -45,6 +45,7 @@ export const getPersonalizedArticles = async (): Promise<Article[]> => {
       throw new Error('Failed to fetch personalized articles');
     }
     const data: ArticleApiResponse = await response.json();
+    
     return data.data.articles;
   } catch (error) {
     console.error('Error fetching personalized articles:', error);

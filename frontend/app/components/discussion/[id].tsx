@@ -46,7 +46,7 @@ export default function DiscussionScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://0.0.0.0:5000/api/discussions/${id}`)
+      fetch(`http://0.0.0.0:5050/api/discussions/${id}`)
         .then((res) => res.json())
         .then(setDiscussion)
         .catch(console.error);

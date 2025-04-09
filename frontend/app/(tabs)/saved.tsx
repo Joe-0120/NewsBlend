@@ -84,7 +84,7 @@ export default function SavedArticlesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  container: { flex: 1, paddingTop: 56, paddingHorizontal: 16, backgroundColor: "#fff" },
   topHeader: {
     flexDirection: "row",
     alignItems: "center",
