@@ -8,11 +8,10 @@ import { StyleSheet } from 'react-native';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    'SchibstedGrotesk-Regular': require('../assets/SchibstedGrotesk-Regular.ttf'),
-    'SchibstedGrotesk-Bold': require('../assets/SchibstedGrotesk-Bold.ttf'),
+  const [fontsLoaded, fontError] = useFonts({
+    'SchibstedGrotesk-Regular': require('../assets/fonts/SchibstedGrotesk/SchibstedGrotesk-Regular.ttf'),
+    'SchibstedGrotesk-Medium': require('../assets/fonts/SchibstedGrotesk/SchibstedGrotesk-Medium.ttf'),
+    'SchibstedGrotesk-Bold': require('../assets/fonts/SchibstedGrotesk/SchibstedGrotesk-Bold.ttf'),
   });
 
   useEffect(() => {
@@ -54,7 +53,7 @@ export const globalStyles = StyleSheet.create({
     color: '#000',
   },
   textSecondary: {
-      fontFamily: 'SchibstedGrotesk-Regular',
+      fontFamily: 'SchibstedGrotesk-Medium',
       fontSize: 12,
       color: '#808080',
   }
