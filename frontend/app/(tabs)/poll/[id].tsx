@@ -10,6 +10,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
+
 type PollOption = {
   label: string;
   percentage: number;

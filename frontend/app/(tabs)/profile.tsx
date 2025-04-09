@@ -11,6 +11,7 @@ import { Stack } from 'expo-router';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
+
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function Profile() {
@@ -28,7 +29,6 @@ export default function Profile() {
     },
     menu: [
       'Saved articles',
-      'Read articles',
       '2025 wrapped',
       'My account',
     ],
@@ -86,11 +86,19 @@ export default function Profile() {
       {/* Menu */}
       <View style={styles.menuSection}>
         <Text style={styles.menuHeader}>Reading history</Text>
-        {user.menu.slice(0, 3).map((label, i) => (
+        {user.menu.slice(0, 2).map((label, i) => (
           <TouchableOpacity
             key={i}
             style={styles.menuItem}
-            onPress={() => {}}
+            onPress={() => {
+              if (i === 0) {
+                // Navigate to the Saved Articles screen
+                router.push('/saved-articles');
+              } else {
+                // Placeholder for other actions
+                console.log(`${label} pressed`);
+              }
+            }}
           >
             <Text style={styles.menuLabel}>{label}</Text>
             <Ionicons
