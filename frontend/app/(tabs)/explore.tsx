@@ -8,31 +8,42 @@ import { useLocalSearchParams } from 'expo-router';
 import { Article, ArticleSearchParams } from '../../models/Article';
 import { getBreakingNewsArticles, getMoreNewsArticles, searchArticles } from '../../services/ArticleService';
 
-// --- Reuse News Card Component (or import if defined separately) ---
+import { router } from 'expo-router';
+
+
+
 const NewsCard = ({ item, horizontal = false }: { item: Article, horizontal?: boolean }) => (
-  <View style={[styles.card, horizontal ? styles.cardHorizontal : styles.cardVertical]}>
-    <Image source={item.imageUrl} style={styles.cardImageLarge} />
+
+  <TouchableOpacity 
+    style={[styles.card, horizontal ? styles.cardHorizontal : styles.cardVertical]}
+    onPress={() => router.push(`../components/article/${item.id}`)}
+    activeOpacity={0.8}
+  >
+    <Image source={{ uri: item.imageUrl }} style={styles.cardImageLarge} />
     <Text style={styles.cardTitle} numberOfLines={3}>{item.title}</Text>
     <View style={styles.cardFooter}>
-      <Image source={item.sourceLogo} style={styles.sourceLogo} />
-      <Text style={styles.cardSource}>{item.source}</Text>
+      <Image source={{ uri: item.sourceLogo }} style={styles.sourceLogo} />
       <Text style={styles.cardCategory}>{item.category}</Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
+
 const SmallNewsCard = ({ item }: { item: Article }) => (
-  <View style={styles.smallCard}>
+  <TouchableOpacity 
+    style={styles.smallCard}
+    onPress={() => router.push(`../components/article/${item.id}`)}
+    activeOpacity={0.8}
+  >
     <View style={styles.smallCardTextContainer}>
       <Text style={styles.smallCardTitle} numberOfLines={3}>{item.title}</Text>
       <View style={styles.cardFooter}>
-        <Image source={item.sourceLogo} style={styles.sourceLogo} />
-        <Text style={styles.cardSource}>{item.source}</Text>
+        <Image source={{ uri: item.sourceLogo }} style={styles.sourceLogo} />
         <Text style={styles.cardCategory}>{item.category}</Text>
       </View>
     </View>
-    <Image source={item.imageUrl} style={styles.smallCardImage} />
-  </View>
+    <Image source={{ uri: item.imageUrl }} style={styles.smallCardImage} />
+  </TouchableOpacity>
 );
 
 const categories = ['Politics', 'Climate', 'Environment', 'Business', 'Tech', 'World'];
@@ -423,8 +434,8 @@ const styles = StyleSheet.create({
     marginTop: 0, // Adjust margin
   },
   sourceLogo: {
-    width: 16,
-    height: 16,
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
     marginRight: 4,
   },

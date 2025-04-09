@@ -8,12 +8,19 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MyAccount() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { 
+      paddingTop: insets.top, 
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right
+    }]}>
       {/* Custom header at the top, arrow + text on the same line */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.push('/profile')}>
