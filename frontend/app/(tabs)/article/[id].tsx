@@ -103,7 +103,7 @@ export default function ArticleScreen() {
               style={styles.icon}
             />
           </Pressable>
-          <Pressable onPress={() => router.push("/discussion")}>
+          <Pressable onPress={() => router.push(`/discussion/${id}`)}>
             <Image
               source={require("../../../assets/forum-logo.png")}
               style={styles.icon}

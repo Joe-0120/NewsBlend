@@ -87,5 +87,61 @@ def get_poll(poll_id):
         "options": poll["options"]
     })
 
+@app.route('/api/discussions/<int:article_id>')
+def get_discussions(article_id):
+    discussions = {
+        1: {
+            "article": {
+                "summary": "Blaze that began in central Uiseong county has carved trail of devastation",
+                "source": "CBC",
+                "category": "Environment",
+                "image_url": "http://localhost:5000/static/1_wildfire.png",
+                "logo_url": "http://localhost:5000/static/cbc_logo.png"
+            },
+            "comments": [
+                {
+                    "user": "John Smith",
+                    "comment": "The wildfires have become a serious issue lately. I think we need stronger climate policies to prevent this.",
+                    "likes": 20,
+                    "dislikes": 2,
+                    "replies": 13
+                },
+                {
+                    "user": "David Brown",
+                    "comment": "Completely agree. It's sad to see ancient temples incinerated due to lack of preparedness.",
+                    "likes": 35,
+                    "dislikes": 3,
+                    "replies": 21
+                }
+            ]
+        },
+        2: {
+            "article": {
+                "summary": "Here's a breakdown of the newly announced tariffs by country",
+                "source": "CNN",
+                "category": "Politics",
+                "image_url": "http://localhost:5000/static/2_tariff.png",
+                "logo_url": "http://localhost:5000/static/cnn_logo.png"
+            },
+            "comments": [
+                {
+                    "user": "John Smith",
+                    "comment": "I've been going through the latest announcements on tariffs and wanted to break it down by country. There’s quite a bit of movement, especially with the ongoing trade shifts. Any thoughts on the global impact?",
+                    "likes": 20,
+                    "dislikes": 2,
+                    "replies": 13
+                },
+                {
+                    "user": "David Brown",
+                    "comment": "Interesting topic! From what I’ve seen, countries like the U.S., China, and the EU are making the most noise about tariff adjustments. Anyone have insights into how China’s reacting?",
+                    "likes": 35,
+                    "dislikes": 3,
+                    "replies": 21
+                }
+            ]
+        }
+    }
+    return jsonify(discussions.get(article_id, {"article": {}, "comments": []}))
+
 if __name__ == '__main__':
     app.run(debug=True)
