@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, send_from_directory
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import os
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/static/<path:filename>')
+@cross_origin()
 def static_files(filename):
     return send_from_directory(os.path.join(app.root_path, 'static'), filename)
 
@@ -62,6 +63,7 @@ POLLS = {
 }
 
 @app.route('/api/articles/<article_id>')
+@cross_origin()
 def get_article(article_id):
     article = ARTICLES.get(article_id)
     if article:
@@ -69,6 +71,7 @@ def get_article(article_id):
     return jsonify({"error": "Article not found"}), 404
 
 @app.route('/api/polls/<poll_id>')
+@cross_origin()
 def get_poll(poll_id):
     poll = POLLS.get(poll_id)
     if not poll:
@@ -88,6 +91,7 @@ def get_poll(poll_id):
     })
 
 @app.route('/api/discussions/<int:article_id>')
+@cross_origin()
 def get_discussions(article_id):
     discussions = {
         1: {
