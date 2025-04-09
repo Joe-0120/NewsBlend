@@ -6,7 +6,7 @@ import {
   Pressable,
   ScrollView,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
@@ -31,6 +31,7 @@ type PollData = {
 export default function PollScreen() {
   const router = useRouter();
   const navigation = useNavigation();
+  const { id } = useLocalSearchParams();
   const [poll, setPoll] = useState<PollData | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
 
@@ -39,11 +40,13 @@ export default function PollScreen() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/poll")
-      .then((res) => res.json())
-      .then(setPoll)
-      .catch(console.error);
-  }, []);
+    if (id) {
+      fetch(`http://localhost:5000/api/polls/${id}`)
+        .then((res) => res.json())
+        .then(setPoll)
+        .catch(console.error);
+    }
+  }, [id]);
 
   if (!poll) return null;
 
@@ -51,9 +54,9 @@ export default function PollScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()}>
+        <Pressable onPress={() => router.replace(`/article/${id}`)}>
           <Image
-            source={require("../../assets/black-left-arrow.png")}
+            source={require("../../../assets/black-left-arrow.png")}
             style={styles.backIcon}
           />
         </Pressable>
@@ -65,7 +68,7 @@ export default function PollScreen() {
       <View style={styles.pollPreview}>
         <View style={styles.pollTitleCenter}>
           <Image
-            source={require("../../assets/poll-star.png")}
+            source={require("../../../assets/poll-star.png")}
             style={styles.pollIcon}
           />
           <Text style={styles.pollLabel}>Polls</Text>
@@ -138,7 +141,7 @@ export default function PollScreen() {
       {/* Disabled Add Poll Button */}
       <View style={styles.addPollDisabled}>
         <Image
-          source={require("../../assets/black-plus-circle.png")}
+          source={require("../../../assets/black-plus-circle.png")}
           style={{ width: 20, height: 20, marginRight: 6 }}
         />
         <Text style={styles.addPollText}>Add Poll</Text>
@@ -174,7 +177,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F9F9",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#000000", // darker border to match mockup
+    borderColor: "#000000",
     padding: 12,
     marginBottom: 20,
   },
