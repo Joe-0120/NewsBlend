@@ -42,7 +42,7 @@ export default function PollScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://0.0.0.0:5000/api/polls/${id}`)
+      fetch(`http://localhost:5000/api/polls/${id}`)
         .then((res) => res.json())
         .then(setPoll)
         .catch(console.error);
@@ -55,7 +55,7 @@ export default function PollScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => router.replace(`../article/${id}`)}>
+        <Pressable onPress={() => router.replace(`/article/${id}`)}>
           <Image
             source={require("../../../assets/black-left-arrow.png")}
             style={styles.backIcon}
@@ -154,7 +154,6 @@ export default function PollScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    paddingTop: 44,
     flex: 1,
   },
   content: {

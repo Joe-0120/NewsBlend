@@ -45,7 +45,7 @@ export default function ArticleScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://0.0.0.0:5000/api/articles/${id}`)
+      fetch(`http://localhost:5000/api/articles/${id}`)
         .then((res) => res.json())
         .then((data) => setArticle({ ...data, id }))
         .catch((err) => console.error("Error fetching article:", err));
@@ -124,11 +124,13 @@ export default function ArticleScreen() {
           resizeMode="contain"
         /> */}
         {article.content.map((p, i) => (
-          <Text key={i} style={styles.paragraph}>{p}</Text>
+          <Text key={i} style={styles.paragraph}>
+            {p}
+          </Text>
         ))}
       </ScrollView>
       <View style={styles.bottomBar}>
-        <Pressable onPress={() => router.push("/home")}>
+        <Pressable onPress={() => router.push("/")}>
           {" "}
           {/* Back to main */}
           <Image
@@ -137,13 +139,13 @@ export default function ArticleScreen() {
           />
         </Pressable>
         <View style={styles.rightIcons}>
-          <Pressable onPress={() => router.push(`../poll/${id}`)}>
+          <Pressable onPress={() => router.push(`/poll/${id}`)}>
             <Image
               source={require("../../../assets/black-poll.png")}
               style={styles.icon}
             />
           </Pressable>
-          <Pressable onPress={() => router.push(`../discussion/${id}`)}>
+          <Pressable onPress={() => router.push(`/discussion/${id}`)}>
             <Image
               source={require("../../../assets/discussion-forum.png")}
               style={styles.icon}
@@ -178,7 +180,9 @@ export default function ArticleScreen() {
                 style={styles.shareImage}
               />
               <View style={{ flex: 1, paddingLeft: 10 }}>
-                <Text style={styles.shareTitle} numberOfLines={1}>{article.title}</Text>
+                <Text style={styles.shareTitle} numberOfLines={1}>
+                  {article.title}
+                </Text>
                 <Pressable style={styles.sendCopyBtn}>
                   <Text style={styles.sendCopyText}>Send Copy</Text>
                 </Pressable>
@@ -189,7 +193,7 @@ export default function ArticleScreen() {
             </View>
             <View style={styles.shareIconsRow}>
               {shareIcons.map((icon) => (
-                <Pressable key={icon.key} onPress={() => { }}>
+                <Pressable key={icon.key} onPress={() => {}}>
                   <Image source={icon.src} style={styles.shareIcon} />
                 </Pressable>
               ))}
@@ -204,7 +208,6 @@ export default function ArticleScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFFF",
-    paddingTop: 34,
     flex: 1,
   },
   content: {
@@ -259,7 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 32,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     backgroundColor: "rgba(243, 243, 243, 0.5)",
   },

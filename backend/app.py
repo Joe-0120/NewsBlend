@@ -1,6 +1,4 @@
 from flask import Flask, jsonify, send_from_directory
-from flask_cors import CORS, cross_origin
-from flask import Flask, jsonify, send_from_directory, request
 from flask_cors import CORS
 import os
 
@@ -17,10 +15,8 @@ ARTICLES = {
         "title": "South Korea’s worst-ever wildfires double in size, killing at least 28 and incinerating temples",
         "subtitle": "Blaze that began in central Uiseong county has carved trail of devastation",
         "date": "Thomson Reuters • Posted: Mar 26, 2025 11:27 PM EDT",
-        "image_url": "http://localhost:5050/static/1_wildfire.png",
-        "publisher_logo_url": "http://localhost:5050/static/cbc_logo.png",
-        "image_url": "http://0.0.0.0:5000/static/1_wildfire.png",
-        "publisher_logo_url": "http://0.0.0.0:5000/static/cbc_logo.png",
+        "image_url": "http://localhost:5000/static/1_wildfire.png",
+        "publisher_logo_url": "http://localhost:5000/static/cbc_logo.png",
         "content": [
             "Wildfires raging in South Korea doubled in size on Thursday from a day earlier, as authorities called the blazes the country’s worst natural fire disaster with at least 28 people killed and historic temples incinerated.",
             "More than 30,000 hectares have been charred or were still burning in the largest of the fires that began in the central Uiseong county. It is the biggest single forest fire in South Korea’s history. The previous record was 24,000 hectares in a March 2000 fire.",
@@ -32,10 +28,8 @@ ARTICLES = {
         "title": "Here’s a breakdown of the newly announced tariffs by country",
         "subtitle": "Trade tensions rise amid global policy shifts",
         "date": "CNN • Posted: Mar 20, 2025 2:45 PM EDT",
-        "image_url": "http://localhost:5050/static/2_tariff.png",
-        "publisher_logo_url": "http://localhost:5050/static/cnn_logo.png",
-        "image_url": "http://0.0.0.0:5000/static/2_tariff.png",
-        "publisher_logo_url": "http://0.0.0.0:5000/static/cnn_logo.png",
+        "image_url": "http://localhost:5000/static/2_tariff.png",
+        "publisher_logo_url": "http://localhost:5000/static/cnn_logo.png",
         "content": [
             "Governments around the world are introducing new tariffs this quarter, sparking concerns among economists and global industries. Countries including the United States, China, and members of the European Union have announced measures affecting various sectors.",
             "The U.S. Department of Commerce confirmed a 10% tariff on imported steel and a 5% tariff on select electronic goods from Asia. In response, China imposed retaliatory tariffs on American agricultural products, including soybeans and corn.",
@@ -75,28 +69,6 @@ def get_article(article_id):
     if article:
         return jsonify(article)
     return jsonify({"error": "Article not found"}), 404
-
-@app.route('/api/articles/featured')
-def get_featured_articles():
-    # Get server host from request
-    host = request.host_url.rstrip('/')
-    
-    featured_articles = []
-    for id, article in ARTICLES.items():
-        # Convert relative image URLs to absolute URLs with the correct host
-        image_url = article["image_url"].replace("http://localhost:5000", host)
-        source_logo = article["publisher_logo_url"].replace("http://localhost:5000", host)
-        
-        featured_articles.append({
-            "id": id,
-            "title": article["title"],
-            "summary": article["subtitle"],
-            "source": "CBC" if "cbc_logo.png" in article["publisher_logo_url"] else "CNN",
-            "category": "Environment" if id == "1" else "Politics",
-            "imageUrl": image_url,
-            "sourceLogo": source_logo
-        })
-    return jsonify({"data": {"articles": featured_articles}})
 
 @app.route('/api/polls/<poll_id>')
 @cross_origin()

@@ -114,7 +114,7 @@ export default function Profile() {
         <Text style={[styles.menuHeader, styles.settingsHeader]}>
           Settings
         </Text>
-        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('../components/account')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/account')}>
           <Text style={styles.menuLabel}>{user.menu[3]}</Text>
           <Ionicons
             name="chevron-forward"
@@ -133,7 +133,7 @@ const STAT_COLUMN_WIDTH = (SCREEN_WIDTH - HORIZONTAL_PADDING * 2) / 3;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 70,
+    paddingTop: 24,
     paddingHorizontal: HORIZONTAL_PADDING,
     backgroundColor: '#FFFFFF',
   },
