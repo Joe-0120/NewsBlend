@@ -68,7 +68,7 @@ export default function PollScreen() {
       <View style={styles.pollPreview}>
         <View style={styles.pollTitleCenter}>
           <Image
-            source={require("../../../assets/poll-star.png")}
+            source={require("../../../assets/black-poll.png")}
             style={styles.pollIcon}
           />
           <Text style={styles.pollLabel}>Polls</Text>

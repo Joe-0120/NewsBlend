@@ -89,7 +89,7 @@ export default function DiscussionScreen() {
         <View style={styles.summaryCard}>
           <View style={styles.summaryTitleCenter}>
             <Image
-              source={require("../../../assets/forum-logo.png")}
+              source={require("../../../assets/discussion-forum.png")}
               style={styles.summaryIcon}
             />
             <Text style={styles.summaryLabel}>Discussion Forum</Text>

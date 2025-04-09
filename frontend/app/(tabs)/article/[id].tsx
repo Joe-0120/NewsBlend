@@ -99,13 +99,13 @@ export default function ArticleScreen() {
         <View style={styles.rightIcons}>
           <Pressable onPress={() => router.push(`/poll/${id}`)}>
             <Image
-              source={require("../../../assets/poll-star.png")}
+              source={require("../../../assets/black-poll.png")}
               style={styles.icon}
             />
           </Pressable>
           <Pressable onPress={() => router.push(`/discussion/${id}`)}>
             <Image
-              source={require("../../../assets/forum-logo.png")}
+              source={require("../../../assets/discussion-forum.png")}
               style={styles.icon}
             />
           </Pressable>
