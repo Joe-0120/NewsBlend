@@ -10,8 +10,10 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Article = {
+  id?: string; //saving purposes
   title: string;
   subtitle: string;
   publisher_logo_url: string;
@@ -36,6 +38,7 @@ export default function ArticleScreen() {
     { key: "email", src: require("../../../assets/email-icon.png") },
   ];
 
+
   useEffect(() => {
     navigation.setOptions({ tabBarStyle: { display: "none" } });
   }, []);
@@ -44,10 +47,49 @@ export default function ArticleScreen() {
     if (id) {
       fetch(`http://0.0.0.0:5000/api/articles/${id}`)
         .then((res) => res.json())
-        .then((data) => setArticle(data))
+        .then((data) => setArticle({ ...data, id }))
         .catch((err) => console.error("Error fetching article:", err));
     }
   }, [id]);
+
+  // Check AsyncStorage to see if this article has been saved already
+  useEffect(() => {
+    async function checkSavedStatus() {
+      try {
+        const stored = await AsyncStorage.getItem("savedArticles");
+        if (stored && id) {
+          const savedArticles: Article[] = JSON.parse(stored);
+          const exists = savedArticles.some((a) => a.id === id);
+          setBookmarked(exists);
+        }
+      } catch (e) {
+        console.error("Error checking saved status", e);
+      }
+    }
+    if (id) {
+      checkSavedStatus();
+    }
+  }, [id]);
+
+  // Function to save/unsave the article in AsyncStorage.
+  async function saveArticle() {
+    try {
+      const stored = await AsyncStorage.getItem("savedArticles");
+      let savedArticles: Article[] = stored ? JSON.parse(stored) : [];
+
+      if (!bookmarked && article) {
+        // Article is not saved yet—add it to the list
+        savedArticles.push(article);
+      } else {
+        // Remove the article from the list based on id
+        savedArticles = savedArticles.filter((a) => a.id !== id);
+      }
+      await AsyncStorage.setItem("savedArticles", JSON.stringify(savedArticles));
+      setBookmarked(!bookmarked);
+    } catch (e) {
+      console.error("Error saving article", e);
+    }
+  }
 
   if (!article) {
     return (
@@ -97,17 +139,17 @@ export default function ArticleScreen() {
         <View style={styles.rightIcons}>
           <Pressable onPress={() => router.push(`../poll/${id}`)}>
             <Image
-              source={require("../../../assets/poll-star.png")}
+              source={require("../../../assets/black-poll.png")}
               style={styles.icon}
             />
           </Pressable>
           <Pressable onPress={() => router.push(`../discussion/${id}`)}>
             <Image
-              source={require("../../../assets/forum-logo.png")}
+              source={require("../../../assets/discussion-forum.png")}
               style={styles.icon}
             />
           </Pressable>
-          <Pressable onPress={() => setBookmarked(!bookmarked)}>
+          <Pressable onPress={saveArticle}>
             <Image
               source={
                 bookmarked
@@ -117,6 +159,7 @@ export default function ArticleScreen() {
               style={styles.icon}
             />
           </Pressable>
+        
           <Pressable onPress={() => setShowShareSheet(true)}>
             <Image
               source={require("../../../assets/black-share.png")}

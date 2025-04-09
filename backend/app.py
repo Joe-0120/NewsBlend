@@ -1,3 +1,5 @@
+from flask import Flask, jsonify, send_from_directory
+from flask_cors import CORS, cross_origin
 from flask import Flask, jsonify, send_from_directory, request
 from flask_cors import CORS
 import os
@@ -6,6 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/static/<path:filename>')
+@cross_origin()
 def static_files(filename):
     return send_from_directory(os.path.join(app.root_path, 'static'), filename)
 
@@ -14,6 +17,8 @@ ARTICLES = {
         "title": "South Korea’s worst-ever wildfires double in size, killing at least 28 and incinerating temples",
         "subtitle": "Blaze that began in central Uiseong county has carved trail of devastation",
         "date": "Thomson Reuters • Posted: Mar 26, 2025 11:27 PM EDT",
+        "image_url": "http://localhost:5050/static/1_wildfire.png",
+        "publisher_logo_url": "http://localhost:5050/static/cbc_logo.png",
         "image_url": "http://0.0.0.0:5000/static/1_wildfire.png",
         "publisher_logo_url": "http://0.0.0.0:5000/static/cbc_logo.png",
         "content": [
@@ -27,6 +32,8 @@ ARTICLES = {
         "title": "Here’s a breakdown of the newly announced tariffs by country",
         "subtitle": "Trade tensions rise amid global policy shifts",
         "date": "CNN • Posted: Mar 20, 2025 2:45 PM EDT",
+        "image_url": "http://localhost:5050/static/2_tariff.png",
+        "publisher_logo_url": "http://localhost:5050/static/cnn_logo.png",
         "image_url": "http://0.0.0.0:5000/static/2_tariff.png",
         "publisher_logo_url": "http://0.0.0.0:5000/static/cnn_logo.png",
         "content": [
@@ -62,6 +69,7 @@ POLLS = {
 }
 
 @app.route('/api/articles/<article_id>')
+@cross_origin()
 def get_article(article_id):
     article = ARTICLES.get(article_id)
     if article:
@@ -91,6 +99,7 @@ def get_featured_articles():
     return jsonify({"data": {"articles": featured_articles}})
 
 @app.route('/api/polls/<poll_id>')
+@cross_origin()
 def get_poll(poll_id):
     poll = POLLS.get(poll_id)
     if not poll:
@@ -110,6 +119,7 @@ def get_poll(poll_id):
     })
 
 @app.route('/api/discussions/<int:article_id>')
+@cross_origin()
 def get_discussions(article_id):
     discussions = {
         1: {
@@ -117,8 +127,8 @@ def get_discussions(article_id):
                 "summary": "Blaze that began in central Uiseong county has carved trail of devastation",
                 "source": "CBC",
                 "category": "Environment",
-                "image_url": "http://localhost:5000/static/1_wildfire.png",
-                "logo_url": "http://localhost:5000/static/cbc_logo.png"
+                "image_url": "http://localhost:5050/static/1_wildfire.png",
+                "logo_url": "http://localhost:5050/static/cbc_logo.png"
             },
             "comments": [
                 {
@@ -142,8 +152,8 @@ def get_discussions(article_id):
                 "summary": "Here's a breakdown of the newly announced tariffs by country",
                 "source": "CNN",
                 "category": "Politics",
-                "image_url": "http://localhost:5000/static/2_tariff.png",
-                "logo_url": "http://localhost:5000/static/cnn_logo.png"
+                "image_url": "http://localhost:5050/static/2_tariff.png",
+                "logo_url": "http://localhost:5050/static/cnn_logo.png"
             },
             "comments": [
                 {
@@ -166,4 +176,4 @@ def get_discussions(article_id):
     return jsonify(discussions.get(article_id, {"article": {}, "comments": []}))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5050, debug=True)
