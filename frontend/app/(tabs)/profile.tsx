@@ -93,7 +93,7 @@ export default function Profile() {
             onPress={() => {
               if (i === 0) {
                 // Navigate to the Saved Articles screen
-                router.push('/saved-articles');
+                router.push('/saved');
               } else {
                 // Placeholder for other actions
                 console.log(`${label} pressed`);
@@ -114,8 +114,8 @@ export default function Profile() {
         <Text style={[styles.menuHeader, styles.settingsHeader]}>
           Settings
         </Text>
-        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/account')}>
-          <Text style={styles.menuLabel}>{user.menu[3]}</Text>
+        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('../components/account')}>
+          <Text style={styles.menuLabel}>{user.menu[2]}</Text>
           <Ionicons
             name="chevron-forward"
             size={20}
@@ -133,7 +133,7 @@ const STAT_COLUMN_WIDTH = (SCREEN_WIDTH - HORIZONTAL_PADDING * 2) / 3;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 24,
+    paddingTop: 70,
     paddingHorizontal: HORIZONTAL_PADDING,
     backgroundColor: '#FFFFFF',
   },

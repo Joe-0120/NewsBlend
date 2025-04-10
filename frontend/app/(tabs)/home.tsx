@@ -11,15 +11,18 @@ import { getFeaturedArticles, getPersonalizedArticles, searchArticles } from '..
 
 // --- Reusable News Card Component ---
 const NewsCard = ({ item, horizontal = false }: { item: Article, horizontal?: boolean }) => (
-  <View style={[styles.card, horizontal ? styles.cardHorizontal : styles.cardVertical]}>
-    <Image source={item.imageUrl} style={styles.cardImage} />
+  <TouchableOpacity 
+    style={[styles.card, horizontal ? styles.cardHorizontal : styles.cardVertical]}
+    onPress={() => router.push(`../components/article/${item.id}`)}
+    activeOpacity={0.8}
+  >
+    <Image source={{ uri: item.imageUrl }} style={styles.cardImage} />
     <Text style={styles.cardTitle} numberOfLines={3}>{item.title}</Text>
     <View style={styles.cardFooter}>
-      <Image source={item.sourceLogo} style={styles.sourceLogo} />
-      <Text style={styles.cardSource}>{item.source}</Text>
+      <Image source={{ uri: item.sourceLogo }} style={styles.sourceLogo} />
       <Text style={styles.cardCategory}>{item.category}</Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
 const categories = ['Politics', 'Climate', 'Environment', 'Business', 'Tech', 'World'];
@@ -311,8 +314,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   sourceLogo: {
-      width: 16,
-      height: 16,
+      width: 24,
+      height: 24,
       resizeMode: 'contain',
       marginRight: 4,
   },

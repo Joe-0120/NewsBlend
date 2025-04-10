@@ -75,7 +75,7 @@ export default function DiscussionScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Pressable onPress={() => router.replace(`/article/${id}`)}>
+          <Pressable onPress={() => router.replace(`../article/${id}`)}>
             <Image
               source={require("../../../assets/black-left-arrow.png")}
               style={styles.backIcon}
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: 44,
   },
   content: {
     padding: 20,

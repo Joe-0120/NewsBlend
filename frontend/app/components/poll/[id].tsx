@@ -10,7 +10,6 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-
 type PollOption = {
   label: string;
   percentage: number;
@@ -55,7 +54,7 @@ export default function PollScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => router.replace(`/article/${id}`)}>
+        <Pressable onPress={() => router.replace(`../article/${id}`)}>
           <Image
             source={require("../../../assets/black-left-arrow.png")}
             style={styles.backIcon}
@@ -154,6 +153,7 @@ export default function PollScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
+    paddingTop: 44,
     flex: 1,
   },
   content: {

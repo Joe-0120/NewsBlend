@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Article = {
   id?: string; //saving purposes
@@ -37,7 +37,6 @@ export default function ArticleScreen() {
     { key: "airdrop", src: require("../../../assets/airdrop-icon.png") },
     { key: "email", src: require("../../../assets/email-icon.png") },
   ];
-
 
   useEffect(() => {
     navigation.setOptions({ tabBarStyle: { display: "none" } });
@@ -84,7 +83,10 @@ export default function ArticleScreen() {
         // Remove the article from the list based on id
         savedArticles = savedArticles.filter((a) => a.id !== id);
       }
-      await AsyncStorage.setItem("savedArticles", JSON.stringify(savedArticles));
+      await AsyncStorage.setItem(
+        "savedArticles",
+        JSON.stringify(savedArticles)
+      );
       setBookmarked(!bookmarked);
     } catch (e) {
       console.error("Error saving article", e);
@@ -130,7 +132,7 @@ export default function ArticleScreen() {
         ))}
       </ScrollView>
       <View style={styles.bottomBar}>
-        <Pressable onPress={() => router.push("/")}>
+        <Pressable onPress={() => router.push("/home")}>
           {" "}
           {/* Back to main */}
           <Image
@@ -139,13 +141,13 @@ export default function ArticleScreen() {
           />
         </Pressable>
         <View style={styles.rightIcons}>
-          <Pressable onPress={() => router.push(`/poll/${id}`)}>
+          <Pressable onPress={() => router.push(`../poll/${id}`)}>
             <Image
               source={require("../../../assets/black-poll.png")}
               style={styles.icon}
             />
           </Pressable>
-          <Pressable onPress={() => router.push(`/discussion/${id}`)}>
+          <Pressable onPress={() => router.push(`../discussion/${id}`)}>
             <Image
               source={require("../../../assets/discussion-forum.png")}
               style={styles.icon}
@@ -161,7 +163,7 @@ export default function ArticleScreen() {
               style={styles.icon}
             />
           </Pressable>
-        
+
           <Pressable onPress={() => setShowShareSheet(true)}>
             <Image
               source={require("../../../assets/black-share.png")}
@@ -208,6 +210,7 @@ export default function ArticleScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFFF",
+    paddingTop: 34,
     flex: 1,
   },
   content: {
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 32,
     paddingHorizontal: 16,
     backgroundColor: "rgba(243, 243, 243, 0.5)",
   },

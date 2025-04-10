@@ -8,7 +8,9 @@
 import { Article, ArticleApiResponse, ArticleSearchParams } from '../models/Article';
 
 // Base URL for the API - change this to your actual API endpoint when deploying
-const API_URL = 'http://localhost:5000/api';
+// Using IP address instead of localhost for mobile compatibility
+const API_URL = 'http://localhost:5050/api'; // Android emulator
+// const API_URL = 'http://127.0.0.1:5000/api'; // iOS simulator
 
 /**
  * Fetch featured articles
@@ -17,30 +19,12 @@ const API_URL = 'http://localhost:5000/api';
  */
 export const getFeaturedArticles = async (): Promise<Article[]> => {
   try {
-    // When using real backend, uncomment this:
-    // const response = await fetch(`${API_URL}/articles/featured`);
-    // const data: ArticleApiResponse = await response.json();
-    // return data.data.articles;
-    
-    // For now, return mock data
-    return [
-      { 
-        id: '1', 
-        title: 'Judge orders Trump administration to keep Signal records amid Yemen attack chat controversy', 
-        source: 'CNN', 
-        category: 'Politics', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-      { 
-        id: '2', 
-        title: 'US allies worldwide decry Trump\'s car tariffs and threaten retaliation', 
-        source: 'The Guardian', 
-        category: 'Politics', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-    ];
+    const response = await fetch(`${API_URL}/articles/featured`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch featured articles');
+    }
+    const data: ArticleApiResponse = await response.json();
+    return data.data.articles;
   } catch (error) {
     console.error('Error fetching featured articles:', error);
     return [];
@@ -54,30 +38,15 @@ export const getFeaturedArticles = async (): Promise<Article[]> => {
  */
 export const getPersonalizedArticles = async (): Promise<Article[]> => {
   try {
-    // When using real backend, uncomment this:
-    // const response = await fetch(`${API_URL}/articles/personalized`);
-    // const data: ArticleApiResponse = await response.json();
-    // return data.data.articles;
+    // For now, reuse featured articles as personalized articles
+    // In a real implementation, this would call a separate endpoint
+    const response = await fetch(`${API_URL}/articles/featured`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch personalized articles');
+    }
+    const data: ArticleApiResponse = await response.json();
     
-    // For now, return mock data
-    return [
-      { 
-        id: '3', 
-        title: "'Potent' ice storm likely to hit huge swath of Ontario, including Toronto: Environment Canada", 
-        source: 'CBC', 
-        category: 'Climate', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-      { 
-        id: '4', 
-        title: "Danielle Smith's fight against tariffs takes her to right-wing PragerU gala", 
-        source: 'CBC', 
-        category: 'Politics', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-    ];
+    return data.data.articles;
   } catch (error) {
     console.error('Error fetching personalized articles:', error);
     return [];
@@ -91,22 +60,15 @@ export const getPersonalizedArticles = async (): Promise<Article[]> => {
  */
 export const getBreakingNewsArticles = async (): Promise<Article[]> => {
   try {
-    // When using real backend, uncomment this:
-    // const response = await fetch(`${API_URL}/articles/breaking`);
-    // const data: ArticleApiResponse = await response.json();
-    // return data.data.articles;
-    
-    // For now, return mock data
-    return [
-      { 
-        id: 'b1', 
-        title: "Here's a breakdown of the newly announced tariffs by country", 
-        source: 'CNN', 
-        category: 'Politics', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-    ];
+    // For now, reuse featured articles and filter to get the first one as breaking news
+    // In a real implementation, this would call a separate endpoint
+    const response = await fetch(`${API_URL}/articles/featured`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch breaking news');
+    }
+    const data: ArticleApiResponse = await response.json();
+    // Just return the first article as breaking news
+    return data.data.articles.slice(0, 1);
   } catch (error) {
     console.error('Error fetching breaking news:', error);
     return [];
@@ -120,38 +82,14 @@ export const getBreakingNewsArticles = async (): Promise<Article[]> => {
  */
 export const getMoreNewsArticles = async (): Promise<Article[]> => {
   try {
-    // When using real backend, uncomment this:
-    // const response = await fetch(`${API_URL}/articles/more`);
-    // const data: ArticleApiResponse = await response.json();
-    // return data.data.articles;
-    
-    // For now, return mock data
-    return [
-      { 
-        id: 'm1', 
-        title: "Could Trump's tariffs spell the end of Canadian-made NHL jerseys?", 
-        source: 'CBC', 
-        category: 'Politics', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-      { 
-        id: 'm2', 
-        title: "Trump administration lists Quebec language law Bill 96 as trade barrier", 
-        source: 'CBC', 
-        category: 'Politics', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-      { 
-        id: 'm3', 
-        title: "Another news item for the list", 
-        source: 'Reuters', 
-        category: 'Business', 
-        imageUrl: require('../assets/logo.png'), 
-        sourceLogo: require('../assets/logo.png')
-      },
-    ];
+    // For now, reuse featured articles as more news
+    // In a real implementation, this would call a separate endpoint
+    const response = await fetch(`${API_URL}/articles/featured`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch more news');
+    }
+    const data: ArticleApiResponse = await response.json();
+    return data.data.articles;
   } catch (error) {
     console.error('Error fetching more news:', error);
     return [];
@@ -166,36 +104,33 @@ export const getMoreNewsArticles = async (): Promise<Article[]> => {
  */
 export const searchArticles = async (params: ArticleSearchParams): Promise<Article[]> => {
   try {
-    // When using real backend, uncomment this:
-    // const queryParams = new URLSearchParams();
-    // Object.entries(params).forEach(([key, value]) => {
-    //   if (value) queryParams.append(key, value.toString());
-    // });
-    // const response = await fetch(`${API_URL}/articles/search?${queryParams}`);
-    // const data: ArticleApiResponse = await response.json();
-    // return data.data.articles;
+    // Since we don't have a dedicated search endpoint yet, 
+    // we'll fetch all articles from the featured endpoint and filter them
+    const response = await fetch(`${API_URL}/articles/featured`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch articles for search');
+    }
     
-    // For now, filter the mock data based on the search query
-    const allArticles = [
-      ...await getFeaturedArticles(),
-      ...await getPersonalizedArticles(),
-      ...await getBreakingNewsArticles(),
-      ...await getMoreNewsArticles(),
-    ];
+    const data: ArticleApiResponse = await response.json();
+    const allArticles = data.data.articles;
     
-    if (!params.query && !params.category) {
+    if (!params.query && !params.category && !params.source) {
       return allArticles;
     }
     
     return allArticles.filter(article => {
       const matchesQuery = !params.query || 
         article.title.toLowerCase().includes(params.query.toLowerCase()) ||
+        (article.summary && article.summary.toLowerCase().includes(params.query.toLowerCase())) ||
         article.source.toLowerCase().includes(params.query.toLowerCase());
       
       const matchesCategory = !params.category || 
         article.category.toLowerCase() === params.category.toLowerCase();
       
-      return matchesQuery && matchesCategory;
+      const matchesSource = !params.source || 
+        article.source.toLowerCase() === params.source.toLowerCase();
+      
+      return matchesQuery && matchesCategory && matchesSource;
     });
   } catch (error) {
     console.error('Error searching articles:', error);
