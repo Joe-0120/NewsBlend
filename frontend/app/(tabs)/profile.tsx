@@ -11,7 +11,6 @@ import { Stack } from 'expo-router';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function Profile() {
@@ -29,7 +28,7 @@ export default function Profile() {
     },
     menu: [
       'Saved articles',
-      '2025 wrapped',
+      '2025 wrapped', // Will navigate to (tabs private)/wrapaped
       'My account',
     ],
   };
@@ -83,7 +82,7 @@ export default function Profile() {
       {/* Divider */}
       <View style={styles.divider} />
 
-      {/* Menu */}
+      {/* Menu (Reading history) — exclude "My account" */}
       <View style={styles.menuSection}>
         <Text style={styles.menuHeader}>Reading history</Text>
         {user.menu.slice(0, 2).map((label, i) => (
@@ -93,10 +92,10 @@ export default function Profile() {
             onPress={() => {
               if (i === 0) {
                 // Navigate to the Saved Articles screen
-                router.push('/saved');
-              } else {
-                // Placeholder for other actions
-                console.log(`${label} pressed`);
+                router.push('../(tabs)/saved');
+              } else if (i === 1) {
+                // Navigate to the 2025 wrapped screen
+                router.push('../(private)/wrapaped');
               }
             }}
           >
@@ -110,11 +109,15 @@ export default function Profile() {
         ))}
       </View>
 
+      {/* Menu (Settings) — show My account */}
       <View style={styles.menuSection}>
         <Text style={[styles.menuHeader, styles.settingsHeader]}>
           Settings
         </Text>
-        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('../components/account')}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('../components/account')}
+        >
           <Text style={styles.menuLabel}>{user.menu[2]}</Text>
           <Ionicons
             name="chevron-forward"
@@ -140,7 +143,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 32, // from Figma: 32px below role
+    marginBottom: 32,
   },
   avatar: {
     width: AVATAR_SIZE,
@@ -151,85 +154,84 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   initials: {
-    fontSize: 28,           // Figma: 28px
-    lineHeight: 32,         // 32px line height
-    fontWeight: '700',      // Bold
+    fontSize: 28,
+    lineHeight: 32,
+    fontWeight: '700',
     color: '#FFFFFF',
   },
   headerText: {
-    marginLeft: 16,         // 16px gap
+    marginLeft: 16,
   },
   name: {
-    fontSize: 22,           // Figma: 22px
-    lineHeight: 28,         // 28px line height
+    fontSize: 22,
+    lineHeight: 28,
     fontWeight: '700',
     color: '#000000',
-    marginBottom: 4,        // 4px under name
+    marginBottom: 4,
   },
   roleRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   roleIcon: {
-    marginRight: 6,         // 6px between icon & text
+    marginRight: 6,
   },
   role: {
-    fontSize: 16,           // 16px
-    lineHeight: 20,         // 20px line height
-    fontWeight: '400',      // Regular
+    fontSize: 16,
+    lineHeight: 20,
+    fontWeight: '400',
     color: '#000000',
   },
   statsRow: {
     flexDirection: 'row',
-    marginBottom: 24,       // 24px under stats
+    marginBottom: 24,
   },
   stat: {
     width: STAT_COLUMN_WIDTH,
     alignItems: 'center',
   },
   statLabel: {
-    fontSize: 14,           // 14px
-    lineHeight: 20,         // 20px
+    fontSize: 14,
+    lineHeight: 20,
     fontWeight: '400',
     color: '#000000',
-    marginBottom: 8,        // 8px under label
+    marginBottom: 8,
   },
   statValue: {
-    fontSize: 20,           // Figma shows height 24px for value; use 20px font
-    lineHeight: 24,         // 24px line height
+    fontSize: 20,
+    lineHeight: 24,
     fontWeight: '400',
-    color: '#808080',       // Exact hex from Figma
+    color: '#808080',
     textAlign: 'center',
   },
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#000000',
-    marginBottom: 24,       // 24px under divider
+    marginBottom: 24,
   },
   menuSection: {
-    marginBottom: 24,       // spacing between sections
+    marginBottom: 24,
   },
   menuHeader: {
-    fontSize: 16,           // 16px
-    lineHeight: 24,         // 24px
+    fontSize: 16,
+    lineHeight: 24,
     fontWeight: '700',
     color: '#000000',
-    marginBottom: 12,       // 12px under header
+    marginBottom: 12,
   },
   settingsHeader: {
-    marginTop: 0,           // no extra top margin
+    marginTop: 0,
   },
   menuItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,    // 12px vertical touch area
+    paddingVertical: 12,
   },
   menuLabel: {
-    fontSize: 16,           // 16px
-    lineHeight: 24,         // 24px
+    fontSize: 16,
+    lineHeight: 24,
     fontWeight: '400',
     color: '#000000',
   },
 });
-
