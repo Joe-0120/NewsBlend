@@ -10,7 +10,6 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-
 type PollOption = {
   label: string;
   percentage: number;
@@ -42,7 +41,7 @@ export default function PollScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://0.0.0.0:5050/api/polls/${id}`)
+      fetch(`http://localhost:5050/api/polls/${id}`)
         .then((res) => res.json())
         .then(setPoll)
         .catch(console.error);

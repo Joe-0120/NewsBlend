@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Article = {
   id?: string; //saving purposes
@@ -38,14 +38,13 @@ export default function ArticleScreen() {
     { key: "email", src: require("../../../assets/email-icon.png") },
   ];
 
-
   useEffect(() => {
     navigation.setOptions({ tabBarStyle: { display: "none" } });
   }, []);
 
   useEffect(() => {
     if (id) {
-      fetch(`http://0.0.0.0:5050/api/articles/${id}`)
+      fetch(`http://localhost:5050/api/articles/${id}`)
         .then((res) => res.json())
         .then((data) => setArticle({ ...data, id }))
         .catch((err) => console.error("Error fetching article:", err));
@@ -84,7 +83,10 @@ export default function ArticleScreen() {
         // Remove the article from the list based on id
         savedArticles = savedArticles.filter((a) => a.id !== id);
       }
-      await AsyncStorage.setItem("savedArticles", JSON.stringify(savedArticles));
+      await AsyncStorage.setItem(
+        "savedArticles",
+        JSON.stringify(savedArticles)
+      );
       setBookmarked(!bookmarked);
     } catch (e) {
       console.error("Error saving article", e);
@@ -124,7 +126,9 @@ export default function ArticleScreen() {
           resizeMode="contain"
         /> */}
         {article.content.map((p, i) => (
-          <Text key={i} style={styles.paragraph}>{p}</Text>
+          <Text key={i} style={styles.paragraph}>
+            {p}
+          </Text>
         ))}
       </ScrollView>
       <View style={styles.bottomBar}>
@@ -159,7 +163,7 @@ export default function ArticleScreen() {
               style={styles.icon}
             />
           </Pressable>
-        
+
           <Pressable onPress={() => setShowShareSheet(true)}>
             <Image
               source={require("../../../assets/black-share.png")}
@@ -178,7 +182,9 @@ export default function ArticleScreen() {
                 style={styles.shareImage}
               />
               <View style={{ flex: 1, paddingLeft: 10 }}>
-                <Text style={styles.shareTitle} numberOfLines={1}>{article.title}</Text>
+                <Text style={styles.shareTitle} numberOfLines={1}>
+                  {article.title}
+                </Text>
                 <Pressable style={styles.sendCopyBtn}>
                   <Text style={styles.sendCopyText}>Send Copy</Text>
                 </Pressable>
@@ -189,7 +195,7 @@ export default function ArticleScreen() {
             </View>
             <View style={styles.shareIconsRow}>
               {shareIcons.map((icon) => (
-                <Pressable key={icon.key} onPress={() => { }}>
+                <Pressable key={icon.key} onPress={() => {}}>
                   <Image source={icon.src} style={styles.shareIcon} />
                 </Pressable>
               ))}
