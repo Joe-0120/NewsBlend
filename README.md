@@ -69,18 +69,34 @@ newsblend/
 
 ### Frontend Setup (Expo + TypeScript)
 
-1. Navigate to the frontend folder
-2. Install dependencies:
-
+#### Step 1: Navigate to the frontend directory
 ```bash
- npm install
+cd frontend
 ```
 
-4. Start the Expo app:
-
+#### Step 2: Install dependencies
 ```bash
-npm run web
+npm install -g expo-cli
+npm install
 ```
+
+#### Step 3: Start the Expo development server
+```bash
+npx expo start
+```
+
+This will:
+- Launch the Metro Bundler in your terminal or browser
+- Display a QR code to open the app in **Expo Go**
+
+---
+
+### Running the App on a Physical Device
+
+1. Install **Expo Go** from the Play Store or App Store
+2. Make sure your phone is on the **same Wi-Fi network** as your computer
+3. Scan the QR code from the terminal or browser
+4. The app will launch automatically
 
 ---
 
