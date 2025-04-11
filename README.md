@@ -82,7 +82,7 @@ npm install
 
 #### Step 3: Start the Expo development server
 ```bash
-npx expo start
+npx expo start --no-dev --minify
 ```
 
 This will:
