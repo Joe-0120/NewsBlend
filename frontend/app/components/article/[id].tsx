@@ -11,6 +11,7 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../../../config";
 
 type Article = {
   id?: string; //saving purposes
@@ -44,7 +45,7 @@ export default function ArticleScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:5050/api/articles/${id}`)
+      fetch(`${API_URL}/articles/${id}`)
         .then((res) => res.json())
         .then((data) => setArticle({ ...data, id }))
         .catch((err) => console.error("Error fetching article:", err));

@@ -9,6 +9,7 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from "@/config";
 
 type PollOption = {
   label: string;
@@ -41,7 +42,7 @@ export default function PollScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:5050/api/polls/${id}`)
+      fetch(`${API_URL}/polls/${id}`)
         .then((res) => res.json())
         .then(setPoll)
         .catch(console.error);
