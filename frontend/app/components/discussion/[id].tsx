@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from "../../../config";
 
 type Comment = {
   user: string;
@@ -46,7 +47,7 @@ export default function DiscussionScreen() {
 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:5050/api/discussions/${id}`)
+      fetch(`${API_URL}/discussions/${id}`)
         .then((res) => res.json())
         .then(setDiscussion)
         .catch(console.error);

@@ -15,27 +15,27 @@ ARTICLES = {
         "title": "South Korea’s worst-ever wildfires double in size, killing at least 28 and incinerating temples",
         "subtitle": "Blaze that began in central Uiseong county has carved trail of devastation",
         "date": "Thomson Reuters • Posted: Mar 26, 2025 11:27 PM EDT",
-        "image_url": "http://localhost:5050/static/1_wildfire.png",
-        "publisher_logo_url": "http://localhost:5050/static/cbc_logo.png",
-      "content": [
+        "image": "1_wildfire.png",
+        "logo": "cbc_logo.png",
+        "content": [
             "Wildfires raging in South Korea doubled in size on Thursday from a day earlier, as authorities called the blazes the country’s worst natural fire disaster with at least 28 people killed and historic temples incinerated.",
             "More than 30,000 hectares have been charred or were still burning in the largest of the fires that began in the central Uiseong county. It is the biggest single forest fire in South Korea’s history. The previous record was 24,000 hectares in a March 2000 fire.",
             "Helicopters dumped water over burning forests in South Korea on Thursday as fire crews struggled to contain the country’s worst-ever wildfires, which have killed at least 28 people, forced at least 300 to flee their homes and destroyed historic temples. Officials say it may take several more days to bring the fires fully under control due to dry and windy conditions.",
             "Authorities have urged residents in high-risk areas to evacuate immediately. South Korea's president has called for an emergency response team to support those affected and speed up recovery efforts."
-        ],
+        ]
     },
     "2": {
         "title": "Here’s a breakdown of the newly announced tariffs by country",
         "subtitle": "Trade tensions rise amid global policy shifts",
         "date": "CNN • Posted: Mar 20, 2025 2:45 PM EDT",
-        "image_url": "http://localhost:5050/static/2_tariff.png",
-        "publisher_logo_url": "http://localhost:5050/static/cnn_logo.png",
-      "content": [
+        "image": "2_tariff.png",
+        "logo": "cnn_logo.png",
+        "content": [
             "Governments around the world are introducing new tariffs this quarter, sparking concerns among economists and global industries. Countries including the United States, China, and members of the European Union have announced measures affecting various sectors.",
             "The U.S. Department of Commerce confirmed a 10% tariff on imported steel and a 5% tariff on select electronic goods from Asia. In response, China imposed retaliatory tariffs on American agricultural products, including soybeans and corn.",
             "European officials emphasized that the new tariffs are a defensive measure to protect local manufacturing, particularly in the automotive and energy sectors. However, business leaders warn that the changes could lead to increased costs and supply chain disruptions.",
             "Economists are split on the long-term effects of the policies. Some suggest the moves are part of a broader push toward economic independence, while others fear it could slow down post-pandemic recovery."
-        ],
+        ]
     }
 }
 
@@ -62,42 +62,42 @@ POLLS = {
     }
 }
 
+def make_image_url(host, filename):
+    return f"{host}static/{filename}"
+
 @app.route('/api/articles/<article_id>')
 @cross_origin()
 def get_article(article_id):
+    host = request.host_url
     article = ARTICLES.get(article_id)
     if article:
-        return jsonify(article)
+        article_copy = article.copy()
+        article_copy["image_url"] = make_image_url(host, article["image"])
+        article_copy["publisher_logo_url"] = make_image_url(host, article["logo"])
+        return jsonify(article_copy)
     return jsonify({"error": "Article not found"}), 404
 
 @app.route('/api/articles/featured')
 @cross_origin()
 def get_featured_articles():
-    # Get server host from request
-    host = request.host_url.rstrip('/')
-    
+    host = request.host_url
     featured_articles = []
     for id, article in ARTICLES.items():
-        # Convert relative image URLs to absolute URLs with the correct host
-        image_url = article["image_url"].replace("http://localhost:5000", host)
-        source_logo = article["publisher_logo_url"].replace("http://localhost:5000", host)
-        
         featured_articles.append({
             "id": id,
             "title": article["title"],
             "summary": article["subtitle"],
-            "source": "CBC" if "cbc_logo.png" in article["publisher_logo_url"] else "CNN",
+            "source": "CBC" if "cbc_logo" in article["logo"] else "CNN",
             "category": "Environment" if id == "1" else "Politics",
-            "imageUrl": image_url,
-            "sourceLogo": source_logo
+            "imageUrl": make_image_url(host, article["image"]),
+            "sourceLogo": make_image_url(host, article["logo"])
         })
     return jsonify({"data": {"articles": featured_articles}})
-
-
 
 @app.route('/api/polls/<poll_id>')
 @cross_origin()
 def get_poll(poll_id):
+    host = request.host_url
     poll = POLLS.get(poll_id)
     if not poll:
         return jsonify({"error": "Poll not found"}), 404
@@ -106,10 +106,10 @@ def get_poll(poll_id):
         "article": {
             "title": article["title"],
             "summary": article["subtitle"],
-            "source": article["publisher_logo_url"],
+            "source": article["logo"].split('.')[0].upper(),
             "category": "Environment" if poll_id == "1" else "Politics",
-            "image_url": article["image_url"],
-            "logo_url": article["publisher_logo_url"],
+            "image_url": make_image_url(host, article["image"]),
+            "logo_url": make_image_url(host, article["logo"]),
         },
         "question": poll["question"],
         "options": poll["options"]
@@ -118,14 +118,15 @@ def get_poll(poll_id):
 @app.route('/api/discussions/<int:article_id>')
 @cross_origin()
 def get_discussions(article_id):
+    host = request.host_url
     discussions = {
         1: {
             "article": {
-                "summary": "Blaze that began in central Uiseong county has carved trail of devastation",
+                "summary": ARTICLES["1"]["subtitle"],
                 "source": "CBC",
                 "category": "Environment",
-                "image_url": "http://localhost:5050/static/1_wildfire.png",
-                "logo_url": "http://localhost:5050/static/cbc_logo.png"
+                "image_url": make_image_url(host, ARTICLES["1"]["image"]),
+                "logo_url": make_image_url(host, ARTICLES["1"]["logo"])
             },
             "comments": [
                 {
@@ -146,16 +147,16 @@ def get_discussions(article_id):
         },
         2: {
             "article": {
-                "summary": "Here's a breakdown of the newly announced tariffs by country",
+                "summary": ARTICLES["2"]["subtitle"],
                 "source": "CNN",
                 "category": "Politics",
-                "image_url": "http://localhost:5050/static/2_tariff.png",
-                "logo_url": "http://localhost:5050/static/cnn_logo.png"
+                "image_url": make_image_url(host, ARTICLES["2"]["image"]),
+                "logo_url": make_image_url(host, ARTICLES["2"]["logo"])
             },
             "comments": [
                 {
                     "user": "John Smith",
-                    "comment": "I've been going through the latest announcements on tariffs and wanted to break it down by country. There’s quite a bit of movement, especially with the ongoing trade shifts. Any thoughts on the global impact?",
+                    "comment": "I've been going through the latest announcements on tariffs and wanted to break it down by country...",
                     "likes": 20,
                     "dislikes": 2,
                     "replies": 13
